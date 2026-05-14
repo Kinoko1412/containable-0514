@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>高大永續材庫 EcoBookHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<!-- 可選：在此填入你的 Mapbox public token（https://account.mapbox.com/access-tokens/）；留空則使用 app.js 內預設示範 token -->
+<meta name="mapbox-access-token" content="pk.eyJ1Ijoia2lub2tvMTQxMiIsImEiOiJjbXA0cjhmNnoxMGp0MnFxeXJ2dXY1aGh3In0.epGQHTLmKBNmkY2q84XQPA">
+</head>
+<body>
+  <!-- 桌面背景裝飾 -->
+  <div class="desktop-bg">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
+    <div class="brand-watermark">
+      <h1>高大永續材庫</h1>
+      <p>EcoBookHub · 讓每一本書都延續它的價值</p>
+      <div class="brand-tags">
+        <span>♻ 二手教材循環</span>
+        <span>🌱 減碳追蹤</span>
+        <span>💎 點數獎勵</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 手機外框 -->
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <!-- 狀態列 -->
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-icons">
+          <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 8h2v1H1V8zm4-2h2v3H5V6zm4-3h2v6H9V3zm4-3h2v9h-2V0z" fill="currentColor"/></svg>
+          <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M7 1.5C9 1.5 10.8 2.3 12.1 3.6L13 2.7C11.4 1.1 9.3 0 7 0S2.6 1.1 1 2.7l.9.9C3.2 2.3 5 1.5 7 1.5zM7 4.5C8.2 4.5 9.3 5 10.1 5.8L11 4.9C9.9 3.8 8.5 3 7 3S4.1 3.8 3 4.9l.9.9C4.7 5 5.8 4.5 7 4.5zM7 7.5c.5 0 1 .2 1.4.6L7 9.5 5.6 8.1c.4-.4.9-.6 1.4-.6z" fill="currentColor"/></svg>
+          <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><rect x="0.5" y="0.5" width="18" height="9" rx="2" stroke="currentColor"/><rect x="2" y="2" width="15" height="6" rx="1" fill="currentColor"/><rect x="20" y="3.5" width="1.5" height="3" rx="0.5" fill="currentColor"/></svg>
+        </div>
+      </div>
+
+      <!-- 頁面容器 -->
+      <div class="pages-container" id="pagesContainer">
+
+        <!-- ========== 1. 首頁 ========== -->
+        <section class="page active" data-page="home">
+          <div class="page-scroll">
+            <!-- 頂部問候 -->
+            <header class="home-header">
+              <div class="header-top">
+                <div class="user-greeting">
+                  <div class="avatar-mini">陳</div>
+                  <div>
+                    <div class="greet-sub">早安 ☀</div>
+                    <div class="greet-name">陳同學</div>
+                  </div>
+                </div>
+                <button type="button" class="icon-btn" onclick="alert('您有 3 則新通知')" aria-label="通知，3 則未讀">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                  <span class="badge-dot" aria-hidden="true"></span>
+                </button>
+              </div>
+
+              <!-- 搜尋欄 -->
+              <form class="search-bar" role="search" aria-label="搜尋教材" onsubmit="event.preventDefault(); openSearchResultsPage();">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="search" enterkeyhint="search" autocomplete="off" placeholder="搜尋課本、課程、ISBN…" id="searchInput" name="q" aria-label="搜尋教材關鍵字" aria-controls="pageSearchResultsScroll" aria-describedby="searchHintText" />
+                <button type="submit" class="search-submit" aria-label="執行搜尋">搜尋</button>
+                <button type="button" class="scan-mini" onclick="goPage('upload')" aria-label="以掃描方式上架教材">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></svg>
+                </button>
+              </form>
+              <p class="search-hint" id="searchHintText">試試：化學、物理、微積分、ISBN 978…</p>
+
+              <!-- 熱搜標籤 -->
+              <div class="hot-tags" role="group" aria-label="熱門搜尋">
+                <span class="hot-tag" role="button" tabindex="0" onclick="searchTag(this)" onkeydown="hotTagKey(event,this)">🔥 普通物理</span>
+                <span class="hot-tag" role="button" tabindex="0" onclick="searchTag(this)" onkeydown="hotTagKey(event,this)">普通化學</span>
+                <span class="hot-tag" role="button" tabindex="0" onclick="searchTag(this)" onkeydown="hotTagKey(event,this)">微積分</span>
+                <span class="hot-tag" role="button" tabindex="0" onclick="searchTag(this)" onkeydown="hotTagKey(event,this)">線性代數</span>
+                <span class="hot-tag" role="button" tabindex="0" onclick="searchTag(this)" onkeydown="hotTagKey(event,this)">經濟學原理</span>
+              </div>
+            </header>
+
+            <!-- 個人卡片 -->
+            <div class="eco-card">
+              <div class="eco-pattern"></div>
+              <div class="eco-content">
+                <div class="eco-left">
+                  <div class="eco-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Z"/><path d="M12 6v6l4 2"/></svg>
+                    本月減碳
+                  </div>
+                  <div class="eco-value"><span class="num">12.8</span><span class="unit">kg CO₂e</span></div>
+                  <div class="eco-progress">
+                    <div class="eco-progress-bar" style="width:64%"></div>
+                  </div>
+                  <div class="eco-sub">已達月目標 64% · 相當於種下 0.6 棵樹 🌳</div>
+                </div>
+                <div class="eco-divider"></div>
+                <div class="eco-right">
+                  <div class="eco-label">點數餘額</div>
+                  <div class="eco-points">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFD93D"><path d="M12 2L15 9L22 9L17 14L19 21L12 17L5 21L7 14L2 9L9 9Z"/></svg>
+                    <span>2,480</span>
+                  </div>
+                  <button class="eco-btn" onclick="goPage('points')">查看獎勵 →</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 快速功能入口 -->
+            <div class="quick-actions">
+              <div class="quick-item" onclick="goPage('upload')">
+                <div class="quick-icon icon-blue">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                </div>
+                <span>上架教材</span>
+              </div>
+              <div class="quick-item" onclick="alert('打開 QR 掃描器...')">
+                <div class="quick-icon icon-green">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v3M14 21h3M21 21h-3M17 17h4"/></svg>
+                </div>
+                <span>掃描 QR</span>
+              </div>
+              <div class="quick-item" onclick="goPage('profile')">
+                <div class="quick-icon icon-teal">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                </div>
+                <span>借閱紀錄</span>
+              </div>
+              <div class="quick-item" onclick="goPage('points')">
+                <div class="quick-icon icon-purple">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <span>點數兌換</span>
+              </div>
+            </div>
+
+            <!-- 校內回收櫃（橫向滑動卡牌） -->
+            <div class="section">
+              <div class="section-head">
+                <h3>🗺 校內回收櫃</h3>
+                <span class="see-more" onclick="goPage('map')">開啟地圖 →</span>
+              </div>
+              <div class="rec-scroll">
+                <div class="rec-card rec-card-map" onclick="goPage('map')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')goPage('map')">
+                  <div class="rec-img rec-img-map">
+                    <span class="rec-map-icon" aria-hidden="true">
+                      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 15"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+                    </span>
+                    <span class="rec-badge">即時</span>
+                  </div>
+                  <div class="rec-info">
+                    <div class="rec-title">回收櫃地圖</div>
+                    <div class="rec-meta" id="recyclingMapCardMeta">Mapbox · 載入中…</div>
+                    <div class="rec-foot">
+                      <span class="rec-cycle">剩餘空間一眼掌握</span>
+                      <span class="rec-price map-go">前往</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 推薦二手教材 -->
+            <div class="section">
+              <div class="section-head">
+                <h3>📚 為你推薦</h3>
+                <span class="see-more">更多 →</span>
+              </div>
+              <div class="rec-scroll">
+                <div class="rec-card" onclick="openDetail(0)">
+                  <div class="rec-img" style="background:linear-gradient(135deg,#60a5fa,#3b82f6)">
+                    <span class="rec-emoji">⚗️</span>
+                    <span class="rec-badge">熱門</span>
+                  </div>
+                  <div class="rec-info">
+                    <div class="rec-title">普通化學（第十版）</div>
+                    <div class="rec-meta">化學系 · 大一必修</div>
+                    <div class="rec-foot">
+                      <span class="rec-cycle">♻ 已循環 4 次</span>
+                      <span class="rec-price">100 點</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="rec-card" onclick="openDetail(1)">
+                  <div class="rec-img" style="background:linear-gradient(135deg,#34d399,#10b981)">
+                    <span class="rec-emoji">⚛️</span>
+                    <span class="rec-badge">良好</span>
+                  </div>
+                  <div class="rec-info">
+                    <div class="rec-title">普通物理學</div>
+                    <div class="rec-meta">物理系 · 大一必修</div>
+                    <div class="rec-foot">
+                      <span class="rec-cycle">♻ 已循環 6 次</span>
+                      <span class="rec-price">免費領取</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="rec-card" onclick="openDetail(2)">
+                  <div class="rec-img" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)">
+                    <span class="rec-emoji">∫</span>
+                  </div>
+                  <div class="rec-info">
+                    <div class="rec-title">微積分（Stewart）</div>
+                    <div class="rec-meta">通識 · 數學課程</div>
+                    <div class="rec-foot">
+                      <span class="rec-cycle">♻ 已循環 8 次</span>
+                      <span class="rec-price">80 點</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 熱門教材 -->
+            <div class="section">
+              <div class="section-head">
+                <h3>🔥 熱門教材</h3>
+                <span class="see-more">排行榜 →</span>
+              </div>
+              <div class="hot-list">
+                <div class="hot-item" onclick="openDetail(3)">
+                  <div class="hot-rank rank-1">1</div>
+                  <div class="hot-cover" style="background:linear-gradient(135deg,#fbbf24,#f59e0b)">📐</div>
+                  <div class="hot-info">
+                    <div class="hot-title">線性代數導論</div>
+                    <div class="hot-meta">電機系 · Gilbert Strang</div>
+                    <div class="hot-stat">
+                      <span>♻ 12 次循環</span>
+                      <span>·</span>
+                      <span>🌱 減碳 9.6 kg</span>
+                    </div>
+                  </div>
+                  <div class="hot-price">120點</div>
+                </div>
+                <div class="hot-item" onclick="openDetail(4)">
+                  <div class="hot-rank rank-2">2</div>
+                  <div class="hot-cover" style="background:linear-gradient(135deg,#ec4899,#db2777)">💰</div>
+                  <div class="hot-info">
+                    <div class="hot-title">經濟學原理</div>
+                    <div class="hot-meta">經濟系 · Mankiw</div>
+                    <div class="hot-stat">
+                      <span>♻ 9 次循環</span>
+                      <span>·</span>
+                      <span>🌱 減碳 7.2 kg</span>
+                    </div>
+                  </div>
+                  <div class="hot-price">90點</div>
+                </div>
+                <div class="hot-item" onclick="openDetail(5)">
+                  <div class="hot-rank rank-3">3</div>
+                  <div class="hot-cover" style="background:linear-gradient(135deg,#06b6d4,#0891b2)">💻</div>
+                  <div class="hot-info">
+                    <div class="hot-title">資料結構與演算法</div>
+                    <div class="hot-meta">資工系 · 大二必修</div>
+                    <div class="hot-stat">
+                      <span>♻ 7 次循環</span>
+                      <span>·</span>
+                      <span>🌱 減碳 5.6 kg</span>
+                    </div>
+                  </div>
+                  <div class="hot-price">免費</div>
+                </div>
+                <div class="hot-item" onclick="openDetail(6)">
+                  <div class="hot-rank">4</div>
+                  <div class="hot-cover" style="background:linear-gradient(135deg,#84cc16,#65a30d)">🧬</div>
+                  <div class="hot-info">
+                    <div class="hot-title">普通生物學</div>
+                    <div class="hot-meta">生科系 · Campbell</div>
+                    <div class="hot-stat">
+                      <span>♻ 6 次循環</span>
+                      <span>·</span>
+                      <span>🌱 減碳 4.8 kg</span>
+                    </div>
+                  </div>
+                  <div class="hot-price">110點</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 校園貢獻榜 -->
+            <div class="section">
+              <div class="impact-banner">
+                <div class="impact-icon">🌍</div>
+                <div class="impact-text">
+                  <div class="impact-title">高大校園累積減碳</div>
+                  <div class="impact-value">2,847 <span>kg CO₂e</span></div>
+                  <div class="impact-sub">相當於 142 棵樹的年吸碳量</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bottom-space"></div>
+          </div>
+        </section>
+
+        <!-- ========== 1b. 搜尋結果頁 ========== -->
+        <section class="page" data-page="search">
+          <div class="page-scroll">
+            <div class="page-header">
+              <button type="button" class="back-btn" onclick="goPage('home')" aria-label="返回首頁">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <h2>搜尋結果</h2>
+              <button type="button" class="text-btn" onclick="goHomeAndFocusSearch()" aria-label="回到首頁修改關鍵字">修改</button>
+            </div>
+            <div class="search-page-strip">
+              <p id="searchPageQuery" class="search-page-query"></p>
+              <p id="searchPageLiveMsg" class="search-page-live" aria-live="polite" aria-atomic="true"></p>
+            </div>
+            <div class="section search-results-section">
+              <div class="rec-scroll" id="pageSearchResultsScroll"></div>
+              <p id="searchPageEmpty" class="search-page-empty hidden" role="status">沒有符合的教材。可試「化學」「物理」「微積分」或 ISBN 開頭。</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== 2. 上架頁 ========== -->
+        <section class="page" data-page="upload">
+          <div class="page-scroll">
+            <div class="page-header">
+              <button class="back-btn" onclick="goPage('home')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <h2>上架教材</h2>
+              <button class="text-btn">草稿</button>
+            </div>
+
+            <div class="upload-wrap">
+              <!-- QR 掃描 -->
+              <div class="qr-card" onclick="simulateQR()">
+                <div class="qr-frame">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v3M14 21h3M21 21h-3M17 17h4"/></svg>
+                  <div class="qr-corners">
+                    <span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <div class="qr-text">
+                  <div class="qr-title">掃描 QR Code 自動填入</div>
+                  <div class="qr-sub">對準書籍貼紙或 ISBN 條碼</div>
+                </div>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+              </div>
+
+              <!-- 照片上傳 -->
+              <div class="form-section">
+                <div class="form-label">教材照片 <span class="req">*</span></div>
+                <div class="photo-grid">
+                  <div class="photo-upload" onclick="addPhoto(this)">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                    <span>新增封面</span>
+                  </div>
+                  <div class="photo-upload empty"><span>+</span></div>
+                  <div class="photo-upload empty"><span>+</span></div>
+                </div>
+                <div class="form-hint">最多上傳 6 張，建議拍攝封面、書側、內頁劃記</div>
+              </div>
+
+              <!-- 教材名稱 -->
+              <div class="form-section">
+                <div class="form-label">教材名稱 <span class="req">*</span></div>
+                <input class="form-input" type="text" placeholder="例如：普通化學 第十版" value="普通化學（第十版）" />
+              </div>
+
+              <!-- 課程 -->
+              <div class="form-section">
+                <div class="form-label">關聯課程</div>
+                <input class="form-input" type="text" placeholder="輸入或選擇課程" value="化學系一年級必修" />
+              </div>
+
+              <!-- ISBN -->
+              <div class="form-section">
+                <div class="form-label">ISBN</div>
+                <input class="form-input" type="text" placeholder="978-..." value="978-1259638138" />
+              </div>
+
+              <!-- 使用狀況 -->
+              <div class="form-section">
+                <div class="form-label">使用狀況 <span class="req">*</span></div>
+                <div class="condition-grid">
+                  <label class="condition-item">
+                    <input type="radio" name="cond" />
+                    <div class="cond-box">
+                      <div class="cond-emoji">✨</div>
+                      <div class="cond-title">全新</div>
+                      <div class="cond-sub">未拆封 / 未使用</div>
+                    </div>
+                  </label>
+                  <label class="condition-item">
+                    <input type="radio" name="cond" checked />
+                    <div class="cond-box">
+                      <div class="cond-emoji">👍</div>
+                      <div class="cond-title">良好</div>
+                      <div class="cond-sub">少量筆記</div>
+                    </div>
+                  </label>
+                  <label class="condition-item">
+                    <input type="radio" name="cond" />
+                    <div class="cond-box">
+                      <div class="cond-emoji">📖</div>
+                      <div class="cond-title">普通</div>
+                      <div class="cond-sub">明顯使用痕跡</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- 流通方式 -->
+              <div class="form-section">
+                <div class="form-label">流通方式</div>
+                <div class="toggle-row">
+                  <label class="chip-toggle active"><span>租借</span></label>
+                  <label class="chip-toggle"><span>免費領取</span></label>
+                  <label class="chip-toggle"><span>點數兌換</span></label>
+                </div>
+              </div>
+
+              <!-- 備註 -->
+              <div class="form-section">
+                <div class="form-label">補充說明</div>
+                <textarea class="form-input" rows="3" placeholder="例如：第三章有筆記、附贈習題解答…">附歷年考古題 + 第 1~5 章重點筆記</textarea>
+              </div>
+
+              <!-- 預估收益 -->
+              <div class="estimate-card">
+                <div class="estimate-row">
+                  <div class="estimate-label">預估獲得點數</div>
+                  <div class="estimate-value">+150 點 💎</div>
+                </div>
+                <div class="estimate-row">
+                  <div class="estimate-label">預期減碳貢獻</div>
+                  <div class="estimate-value green">0.8 kg CO₂e 🌱</div>
+                </div>
+              </div>
+
+              <button class="primary-btn" onclick="submitUpload()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>
+                確認上架
+              </button>
+              <div class="bottom-space"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== 3. 教材詳細頁 ========== -->
+        <section class="page" data-page="detail">
+          <div class="page-scroll">
+            <div class="detail-hero">
+              <button class="back-btn floating" onclick="goPage('home')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <button class="back-btn floating right" onclick="toggleFav(this)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
+              </button>
+              <div class="detail-cover" id="detailCover" style="background:linear-gradient(135deg,#60a5fa,#3b82f6)">
+                <span id="detailEmoji" class="detail-emoji">⚗️</span>
+              </div>
+            </div>
+
+            <div class="detail-body">
+              <div class="detail-tags">
+                <span class="dt-tag green">良好</span>
+                <span class="dt-tag">化學系</span>
+                <span class="dt-tag">大一必修</span>
+              </div>
+              <h1 class="detail-title" id="detailTitle">普通化學（第十版）</h1>
+              <div class="detail-author" id="detailCourse">Chang & Goldsby · 普通化學 課程</div>
+
+              <!-- 統計卡 -->
+              <div class="stat-grid">
+                <div class="stat-card">
+                  <div class="stat-icon">♻️</div>
+                  <div class="stat-val" id="detailCycle">4</div>
+                  <div class="stat-lbl">循環次數</div>
+                </div>
+                <div class="stat-card highlight">
+                  <div class="stat-icon">🌱</div>
+                  <div class="stat-val" id="detailCarbon">3.2<span>kg</span></div>
+                  <div class="stat-lbl">減少碳排</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-icon">⭐</div>
+                  <div class="stat-val">4.8</div>
+                  <div class="stat-lbl">使用評分</div>
+                </div>
+              </div>
+
+              <!-- 持有人 -->
+              <div class="owner-card">
+                <div class="owner-avatar">林</div>
+                <div class="owner-info">
+                  <div class="owner-name">林同學 <span class="verify">✓ 已驗證</span></div>
+                  <div class="owner-meta">資管系 · 上架 23 本書 · ⭐ 4.9</div>
+                </div>
+                <button class="owner-msg">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </button>
+              </div>
+
+              <!-- 教材描述 -->
+              <div class="detail-section">
+                <h3>📝 教材描述</h3>
+                <p class="detail-desc">附歷年考古題 + 第 1~5 章重點筆記。書況良好，少量螢光筆劃線，無破損撕頁。內頁附原書光碟與課後習題解答。</p>
+              </div>
+
+              <!-- 使用履歷 -->
+              <div class="detail-section">
+                <h3>📜 教材使用履歷</h3>
+                <div class="timeline">
+                  <div class="time-item">
+                    <div class="time-dot active"></div>
+                    <div class="time-content">
+                      <div class="time-head"><b>林同學</b> · 目前持有</div>
+                      <div class="time-meta">2025/02 ~ 至今 · 化學系</div>
+                    </div>
+                  </div>
+                  <div class="time-item">
+                    <div class="time-dot"></div>
+                    <div class="time-content">
+                      <div class="time-head"><b>王同學</b> · 第 3 任使用</div>
+                      <div class="time-meta">2024/09 ~ 2025/01 · 化學系</div>
+                    </div>
+                  </div>
+                  <div class="time-item">
+                    <div class="time-dot"></div>
+                    <div class="time-content">
+                      <div class="time-head"><b>李同學</b> · 第 2 任使用</div>
+                      <div class="time-meta">2024/02 ~ 2024/06 · 化工系</div>
+                    </div>
+                  </div>
+                  <div class="time-item">
+                    <div class="time-dot"></div>
+                    <div class="time-content">
+                      <div class="time-head"><b>張同學</b> · 首次上架</div>
+                      <div class="time-meta">2023/09 ~ 2024/01 · 化學系</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 減碳貢獻 -->
+              <div class="carbon-card">
+                <div class="carbon-head">
+                  <span>🌍 累積減碳貢獻</span>
+                  <span class="carbon-total">3.2 kg CO₂e</span>
+                </div>
+                <div class="carbon-comparison">
+                  <div class="cc-item">
+                    <div class="cc-emoji">🌳</div>
+                    <div class="cc-text">
+                      <b>0.16 棵樹</b>
+                      <span>年吸碳量</span>
+                    </div>
+                  </div>
+                  <div class="cc-item">
+                    <div class="cc-emoji">🚗</div>
+                    <div class="cc-text">
+                      <b>13 km</b>
+                      <span>未開車距離</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bottom-space-lg"></div>
+            </div>
+          </div>
+
+          <!-- 底部行動按鈕 -->
+          <div class="action-bar">
+            <button class="ab-icon" onclick="alert('已加入收藏')">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button class="ab-secondary" onclick="alert('已預約領取 ✓\n請至圖書館前棟服務台取書')">免費領取</button>
+            <button class="ab-primary" onclick="alert('租借成功 ✓\n租期 60 天 · 扣除 100 點')">立即租借</button>
+          </div>
+        </section>
+
+        <!-- ========== 4. 點數獎勵頁 ========== -->
+        <section class="page" data-page="points">
+          <div class="page-scroll">
+            <div class="page-header transparent">
+              <button class="back-btn light" onclick="goPage('home')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <h2 class="light">點數獎勵</h2>
+              <button class="text-btn light">明細</button>
+            </div>
+
+            <!-- 點數卡 -->
+            <div class="points-hero">
+              <div class="ph-bg"></div>
+              <div class="ph-label">我的點數</div>
+              <div class="ph-value">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="#FFD93D"><path d="M12 2L15 9L22 9L17 14L19 21L12 17L5 21L7 14L2 9L9 9Z"/></svg>
+                <span>2,480</span>
+              </div>
+              <div class="ph-sub">≈ 可折抵 NT$ 248</div>
+              <div class="ph-actions">
+                <button class="ph-btn primary">立即折抵</button>
+                <button class="ph-btn ghost">兌換商品</button>
+              </div>
+            </div>
+
+            <!-- 賺取點數 -->
+            <div class="section solid">
+              <div class="section-head">
+                <h3>💎 賺取點數</h3>
+              </div>
+              <div class="earn-list">
+                <div class="earn-item">
+                  <div class="earn-icon" style="background:#e0f2fe;color:#0284c7">📚</div>
+                  <div class="earn-info">
+                    <div class="earn-title">捐贈教材</div>
+                    <div class="earn-sub">每本可獲得 100~200 點</div>
+                  </div>
+                  <button class="earn-go" onclick="goPage('upload')">去捐贈</button>
+                </div>
+                <div class="earn-item">
+                  <div class="earn-icon" style="background:#dcfce7;color:#16a34a">♻️</div>
+                  <div class="earn-info">
+                    <div class="earn-title">教材循環</div>
+                    <div class="earn-sub">您的書每被借閱一次 +50 點</div>
+                  </div>
+                  <button class="earn-go" onclick="alert('您有 3 本書正在循環中')">查看</button>
+                </div>
+                <div class="earn-item">
+                  <div class="earn-icon" style="background:#fef3c7;color:#d97706">📅</div>
+                  <div class="earn-info">
+                    <div class="earn-title">每日簽到</div>
+                    <div class="earn-sub">連續簽到 7 天 +200 點</div>
+                  </div>
+                  <button class="earn-go" onclick="alert('簽到成功 ✓ +20 點')">簽到</button>
+                </div>
+                <div class="earn-item">
+                  <div class="earn-icon" style="background:#fce7f3;color:#db2777">👥</div>
+                  <div class="earn-info">
+                    <div class="earn-title">邀請好友</div>
+                    <div class="earn-sub">好友首次借閱 +300 點</div>
+                  </div>
+                  <button class="earn-go" onclick="alert('邀請連結已複製')">邀請</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 特約商家優惠 -->
+            <div class="section solid">
+              <div class="section-head">
+                <h3>🎁 特約商家優惠</h3>
+                <span class="see-more">全部 →</span>
+              </div>
+              <div class="merchant-scroll">
+                <div class="merchant-card" onclick="alert('已領取優惠券 ✓')">
+                  <div class="merch-img" style="background:linear-gradient(135deg,#f97316,#ea580c)">☕</div>
+                  <div class="merch-tag">熱門</div>
+                  <div class="merch-name">高大星巴克</div>
+                  <div class="merch-desc">咖啡買一送一</div>
+                  <div class="merch-price"><span>500 點</span> 兌換</div>
+                </div>
+                <div class="merchant-card" onclick="alert('已領取優惠券 ✓')">
+                  <div class="merch-img" style="background:linear-gradient(135deg,#10b981,#059669)">🥗</div>
+                  <div class="merch-name">輕食沙拉吧</div>
+                  <div class="merch-desc">85 折優惠</div>
+                  <div class="merch-price"><span>200 點</span> 兌換</div>
+                </div>
+                <div class="merchant-card" onclick="alert('已領取優惠券 ✓')">
+                  <div class="merch-img" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)">📔</div>
+                  <div class="merch-name">校園書局</div>
+                  <div class="merch-desc">文具 9 折</div>
+                  <div class="merch-price"><span>300 點</span> 兌換</div>
+                </div>
+                <div class="merchant-card" onclick="alert('已領取優惠券 ✓')">
+                  <div class="merch-img" style="background:linear-gradient(135deg,#06b6d4,#0891b2)">🍱</div>
+                  <div class="merch-name">學餐優惠</div>
+                  <div class="merch-desc">餐點 9 折</div>
+                  <div class="merch-price"><span>150 點</span> 兌換</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 點數折抵 -->
+            <div class="section solid">
+              <div class="section-head">
+                <h3>💳 點數折抵</h3>
+              </div>
+              <div class="redeem-card">
+                <div class="redeem-row">
+                  <span>租借費用折抵</span>
+                  <span class="redeem-rate">1 點 = $0.1</span>
+                </div>
+                <div class="redeem-slider">
+                  <input type="range" min="0" max="2480" value="1000" id="pointSlider" oninput="updatePoints(this.value)" />
+                </div>
+                <div class="redeem-info">
+                  <div>
+                    <div class="redeem-lbl">使用點數</div>
+                    <div class="redeem-val"><span id="usePoints">1,000</span> 點</div>
+                  </div>
+                  <div>
+                    <div class="redeem-lbl">折抵金額</div>
+                    <div class="redeem-val green">NT$ <span id="useMoney">100</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 兌換紀錄 -->
+            <div class="section solid">
+              <div class="section-head">
+                <h3>📋 近期紀錄</h3>
+              </div>
+              <div class="record-list">
+                <div class="record-item">
+                  <div class="rec-icon green">+</div>
+                  <div class="rec-info">
+                    <div class="rec-title">上架教材：經濟學原理</div>
+                    <div class="rec-time">11/02 14:32</div>
+                  </div>
+                  <div class="rec-amount green">+150</div>
+                </div>
+                <div class="record-item">
+                  <div class="rec-icon red">-</div>
+                  <div class="rec-info">
+                    <div class="rec-title">兌換：高大星巴克咖啡</div>
+                    <div class="rec-time">10/28 09:15</div>
+                  </div>
+                  <div class="rec-amount red">-500</div>
+                </div>
+                <div class="record-item">
+                  <div class="rec-icon green">+</div>
+                  <div class="rec-info">
+                    <div class="rec-title">教材被借閱：微積分</div>
+                    <div class="rec-time">10/25 16:48</div>
+                  </div>
+                  <div class="rec-amount green">+50</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bottom-space"></div>
+          </div>
+        </section>
+
+        <!-- ========== 5. 循環驛站地圖（Mapbox） ========== -->
+        <section class="page map-page" data-page="map">
+          <div class="map-page-inner">
+            <div class="page-header map-page-header">
+              <button type="button" class="back-btn" onclick="goPage('home')" aria-label="返回首頁">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <h2>回收櫃地圖</h2>
+              <button class="text-btn" type="button" onclick="fitRecyclingMapBounds()" title="顯示全部站點" aria-label="地圖全覽：顯示全部回收櫃">全覽</button>
+            </div>
+            <div id="materialBankMap" class="material-bank-map" role="application" aria-label="校內自動化回收櫃位置地圖"></div>
+            <div class="map-legend">
+              <span class="map-legend-title">櫃體剩餘空間</span>
+              <span class="map-legend-item"><i class="dot green"></i> 充足</span>
+              <span class="map-legend-item"><i class="dot amber"></i> 偏少</span>
+              <span class="map-legend-item"><i class="dot red"></i> 將滿</span>
+            </div>
+            <p class="map-disclaimer">回收櫃座標依校園實測標示。地圖於首次開啟時載入 Mapbox 模組以加快首頁。即時餘量為示範數據，實際以校方／物聯網回傳為準。</p>
+          </div>
+        </section>
+
+        <!-- ========== 6. 個人頁面 ========== -->
+        <section class="page" data-page="profile">
+          <div class="page-scroll">
+            <!-- 個人頂部 -->
+            <div class="profile-hero">
+              <div class="ph-deco"></div>
+              <div class="profile-top">
+                <button class="back-btn light" onclick="alert('設定')">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6m11-7h-6m-6 0H1m17.5-7.5-4.24 4.24M9.74 14.26 5.5 18.5m13 0-4.24-4.24M9.74 9.74 5.5 5.5"/></svg>
+                </button>
+                <h2 class="light">個人中心</h2>
+                <button class="back-btn light" onclick="alert('編輯個人資料')">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="m18.5 2.5 3 3L12 15l-4 1 1-4z"/></svg>
+                </button>
+              </div>
+
+              <div class="profile-info">
+                <div class="avatar-lg">陳</div>
+                <div class="pf-name">陳同學 <span class="verify">✓</span></div>
+                <div class="pf-meta">資訊管理系 · 三年級 · 高雄大學</div>
+                <div class="pf-stats">
+                  <div class="pf-stat">
+                    <div class="pf-num">23</div>
+                    <div class="pf-lbl">上架</div>
+                  </div>
+                  <div class="pf-stat">
+                    <div class="pf-num">15</div>
+                    <div class="pf-lbl">借閱</div>
+                  </div>
+                  <div class="pf-stat">
+                    <div class="pf-num">2,480</div>
+                    <div class="pf-lbl">點數</div>
+                  </div>
+                  <div class="pf-stat">
+                    <div class="pf-num">⭐4.9</div>
+                    <div class="pf-lbl">評分</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 減碳成就卡 -->
+            <div class="achieve-card">
+              <div class="ac-header">
+                <h3>🌱 我的減碳成果</h3>
+                <span class="ac-badge">永續達人 Lv.3</span>
+              </div>
+              <div class="ac-main">
+                <div class="ac-num">87.6</div>
+                <div class="ac-unit">kg CO₂e</div>
+              </div>
+              <div class="ac-progress-wrap">
+                <div class="ac-progress-bar"><div style="width:73%"></div></div>
+                <div class="ac-progress-text">距離 Lv.4 還差 32.4 kg</div>
+              </div>
+              <div class="ac-equiv">
+                <div class="ac-eq">
+                  <div class="ac-eq-num">🌳 4.4</div>
+                  <div class="ac-eq-lbl">棵樹年吸碳</div>
+                </div>
+                <div class="ac-eq">
+                  <div class="ac-eq-num">🚗 350</div>
+                  <div class="ac-eq-lbl">km 未開車</div>
+                </div>
+                <div class="ac-eq">
+                  <div class="ac-eq-num">💡 220</div>
+                  <div class="ac-eq-lbl">度電節省</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 功能列表 -->
+            <div class="menu-section">
+              <div class="menu-title">我的</div>
+              <div class="menu-list">
+                <div class="menu-item" onclick="alert('開啟借閱紀錄')">
+                  <div class="menu-icon" style="background:#dbeafe;color:#2563eb">📖</div>
+                  <div class="menu-info">
+                    <div class="menu-name">我的借閱紀錄</div>
+                    <div class="menu-sub">目前借閱 2 本，歷史共 15 本</div>
+                  </div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                </div>
+                <div class="menu-item" onclick="alert('開啟捐贈紀錄')">
+                  <div class="menu-icon" style="background:#dcfce7;color:#16a34a">💚</div>
+                  <div class="menu-info">
+                    <div class="menu-name">我的捐贈紀錄</div>
+                    <div class="menu-sub">已捐贈 23 本，循環中 8 本</div>
+                  </div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                </div>
+                <div class="menu-item" onclick="alert('開啟收藏教材')">
+                  <div class="menu-icon" style="background:#fef3c7;color:#d97706">⭐</div>
+                  <div class="menu-info">
+                    <div class="menu-name">我的收藏</div>
+                    <div class="menu-sub">7 本收藏教材</div>
+                  </div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                </div>
+                <div class="menu-item" onclick="alert('開啟成就系統')">
+                  <div class="menu-icon" style="background:#fce7f3;color:#db2777">🏆</div>
+                  <div class="menu-info">
+                    <div class="menu-name">我的成就</div>
+                    <div class="menu-sub">已解鎖 12 / 30 項徽章</div>
+                  </div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                </div>
+              </div>
+
+              <div class="menu-title">設定</div>
+              <div class="menu-list">
+                <div class="menu-item" onclick="alert('開啟通知設定')">
+                  <div class="menu-icon" style="background:#e0e7ff;color:#4f46e5">🔔</div>
+                  <div class="menu-info"><div class="menu-name">通知設定</div></div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                </div>
+                <div class="menu-item" onclick="alert('關於高大永續材庫')">
+                  <div class="menu-icon" style="background:#cffafe;color:#0891b2">ℹ️</div>
+                  <div class="menu-info"><div class="menu-name">關於 EcoBookHub</div></div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                </div>
+                <div class="menu-item" onclick="alert('客服協助')">
+                  <div class="menu-icon" style="background:#f3e8ff;color:#9333ea">💬</div>
+                  <div class="menu-info"><div class="menu-name">客服協助</div></div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="bottom-space"></div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- 底部導航 -->
+      <nav class="bottom-nav" aria-label="主要功能">
+        <button type="button" class="nav-item active" data-target="home" onclick="goPage('home')" aria-label="首頁">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <span>首頁</span>
+        </button>
+        <button type="button" class="nav-item" data-target="points" onclick="goPage('points')" aria-label="點數與獎勵">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span>獎勵</span>
+        </button>
+        <button type="button" class="nav-fab" onclick="goPage('upload')" aria-label="上架教材">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+        </button>
+        <button type="button" class="nav-item" data-target="detail" onclick="openDetail(0)" aria-label="教材範例">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>教材</span>
+        </button>
+        <button type="button" class="nav-item" data-target="profile" onclick="goPage('profile')" aria-label="個人中心">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>我的</span>
+        </button>
+      </nav>
+
+      <!-- Home indicator -->
+      <div class="home-indicator"></div>
+
+      <!-- Toast -->
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
